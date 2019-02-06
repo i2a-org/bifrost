@@ -1,0 +1,13 @@
+aniso8601==3.0.2
+Click==7.0
+Flask==1.0.2
+Flask-RESTful==0.3.6
+hl7==0.3.4
+Jinja2==2.10
+MarkupSafe==1.0
+pytz==2018.5
+six==1.11.0
+Werkzeug==0.14.1
+boto3==1.7.11
+M2Crypto==0.31.0
+business-rules==1.0.1

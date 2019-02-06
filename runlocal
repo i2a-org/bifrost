@@ -1,0 +1,2 @@
+export ENV="dev"
+python3.5 application.py
