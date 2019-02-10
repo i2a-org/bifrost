@@ -46,7 +46,11 @@ class Patient:
 
         # iterate variables given in list;
         for elem in variables:
-            key, data_type = elem
+            if isinstance(variables, list):
+                key, data_type = elem
+            else:
+                key = elem
+                data_type = variables[elem]
             val, _, _ = self.getMostRecentValue(key)
             if val == False: continue
             if data_type == "numeric": val = float(val)
