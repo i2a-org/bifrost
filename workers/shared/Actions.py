@@ -20,6 +20,12 @@ class Actions(BaseActions):
         self._patient.addValue(variable_id, int(variable_value), "numeric")
 
     # --------------------------------------------------------------------------
+    @rule_action(params={"variable_id": FIELD_TEXT, "value": FIELD_NUMERIC})
+    def accept_numeric_variable(self, variable_id, value):
+
+        self._patient.addValue(variable_id, value, "numeric")
+
+    # --------------------------------------------------------------------------
     @rule_action(params={"variable_id": FIELD_TEXT, "increment": FIELD_NUMERIC})
     def increment_variable(self, variable_id, increment):
 

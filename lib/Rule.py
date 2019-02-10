@@ -46,13 +46,14 @@ class Rule:
     # --------------------------------------------------------------------------
     def resolveRule(self, patient):
 
-        try:
-            # run the rule, as implemented by the according "worker";
-            params = patient.getMostRecentValues(self._rule_obj["variables"])
-            worker = ""
-            if self._rule_obj["type"] == "logic": worker = "rule_based_system"   
-            elif self._rule_obj["type"] == "set": worker = "set_worker"
-            if worker == "": return False
-            return self._workers[worker].run(self._rule_obj, params, patient)
-        except:
-            return False
+        #try:
+        # run the rule, as implemented by the according "worker";
+        params = patient.getMostRecentValues(self._rule_obj["variables"])
+        worker = ""
+        if self._rule_obj["type"] == "logic": worker = "rule_based_system"   
+        elif self._rule_obj["type"] == "set": worker = "set_worker"
+        elif self._rule_obj["type"] == "math": worker = "math_worker"
+        if worker == "": return False
+        return self._workers[worker].run(self._rule_obj, params, patient)
+        #except:
+        #    return False

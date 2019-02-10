@@ -19,6 +19,7 @@ from api.endpoints.processing.Processing_Queue import Processing_Queue
 # worker includes
 from workers.RuleBasedSystem import RuleBasedSystem
 from workers.SetWorker import SetWorker
+from workers.MathWorker import MathWorker
 
 #
 # Definition of endpoint that Flask is using;
@@ -57,5 +58,6 @@ _protected = {
 #
 _workers = {
     "rule_based_system": RuleBasedSystem(),
-    "set_worker": SetWorker()
+    "set_worker": SetWorker(),
+    "math_worker": MathWorker()
 }

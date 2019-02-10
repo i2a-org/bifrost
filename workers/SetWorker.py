@@ -41,7 +41,6 @@ class SetWorker(BaseWorker):
                 params[key] = action["params"][key]
             params["values"] = list(res)
             getattr(a, action["name"])(**params)
-            
 
     # --------------------------------------------------------------------------
     def run(self, rules, variables, patient):
