@@ -45,11 +45,12 @@ class Patient:
         res = {}
 
         # iterate variables given in list;
-        for key in variables:
+        for elem in variables:
+            key, data_type = elem
             val, _, _ = self.getMostRecentValue(key)
             if val == False: continue
-            if variables[key] == "numeric": val = float(val)
-            res[key] = [val, variables[key]]
+            if data_type == "numeric": val = float(val)
+            res[key] = [val, data_type]
 
         return res
 

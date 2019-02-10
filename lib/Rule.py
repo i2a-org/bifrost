@@ -30,15 +30,17 @@ class Rule:
         # (2) variable is also considered missing, if the refresh threshold is
         #     passed (value is considered outdated and user will have to provide it
         #     again); 
-        missing = {}
-        for var in variables:
+        missing = []
+        for elem in variables:
+            var, data_type = elem
             val, date, date_index = patient.getMostRecentValue(var)
             variable = self._db.getVariable(var)
             if "refresh" not in variable: variable["refresh"] = 1000000000
             #print(val == False, val, int(time.time()) - date, variable["refresh"])
             #print((use_refresh and int(time.time()) - date >= variable["refresh"]))
             if val == False or not variable or (use_refresh and int(time.time()) - date >= variable["refresh"]):
-                missing[var] = variables[var]
+                #missing[var] = data_type
+                missing.append(var)
 
         if len(missing) > 0: return False, missing
         return True, missing
