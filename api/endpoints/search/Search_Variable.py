@@ -18,6 +18,7 @@ class Search_Variable(BaseEndpoint):
             res = self._db.searchVariable()
 
         if not res: return self.returnError("GET", "Could not find any variables.")
+        
         return self.returnResult("GET", res, add={
             "s": "" if "s" not in request.args else request.args["s"]
         })

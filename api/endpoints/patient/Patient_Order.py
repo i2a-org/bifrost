@@ -1,8 +1,11 @@
 
 from flask import request
+import time
+
 from api.endpoints.shared.BaseEndpoint import BaseEndpoint
 
 class Patient_Order(BaseEndpoint):
+    """ Patient_Order.py """
 
     # --------------------------------------------------------------------------
     def post(self):
@@ -11,11 +14,6 @@ class Patient_Order(BaseEndpoint):
         if "id" not in request.form:
             return self.returnError("POST", "Parameter 'id' required.")
 
-        report = self._db.searchReport(id=request.form["id"])
-        if not report:
-            return self.returnError("POST", "Report '"+request.form["id"]+"' is not valid.")
-        report = report[0]
-
         patient = self._db.getPatient(request.patient_id)
         if not patient: 
             return self.returnError("POST", "Patient could not be found.")
@@ -23,6 +21,16 @@ class Patient_Order(BaseEndpoint):
         # check if report is already queued;
         if patient.reportIsQueued(request.form["id"]):
             return self.returnError("POST", "Report is already being processed.")
+        if patient["queue"] != {}:
+            return self.returnError("POST", "A report is already being processed.")
+
+        # get the report information
+        report = self._db.searchReport(id=request.form["id"])
+        if not report:
+            return self.returnError("POST", "Report '"+request.form["id"]+"' is not valid.")
+        report = report[0]
+
+        # TODO: check if report previously run AND check if the old report is still valid
 
         # go through all the rules in the report and determine all the missing values;
         missing_fields = []

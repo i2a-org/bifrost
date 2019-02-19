@@ -23,6 +23,13 @@ class Patient_Report(BaseEndpoint):
 
         # get the most recent values for all the variables that are defined 
         # as required by the given report;
-        report["values"] =  patient.getMostRecentValues(report["variables"])
+        rep = {
+            "report_id": report["report_id"], 
+            "name": report["name"], 
+            "description": report["description"], 
+            "refresh": False if "refresh" not in report else report["refresh"],
+            "order": False if "order" not in report else report["order"],
+            "values": patient.getMostRecentValues(report["variables"])
+        }
 
-        return self.returnResult("GET", report)
+        return self.returnResult("GET", rep)

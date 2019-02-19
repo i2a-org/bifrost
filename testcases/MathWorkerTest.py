@@ -9,7 +9,7 @@ from workers.MathWorker import MathWorker
 from lib.Patient import Patient
 
 ################################################################################
-class TestStringMethods(unittest.TestCase):
+class MathWorkerTest(unittest.TestCase):
 
     _worker = MathWorker()
 

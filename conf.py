@@ -29,14 +29,14 @@ _endpoints = {
     "/ping": Ping,
     # search endpoints
     "/search/variable": Search_Variable,
-    "/search/action": Search_Action,
+    #"/search/action": Search_Action,
     "/search/report": Search_Report,
     #"/search/rule": Search_Rule,
     # patient endpoints
     "/patient/create": Patient_Create,
     "/patient/login": Patient_Login,
     "/patient/variable": Patient_Variable,
-    "/patient/rule": Patient_Rule,
+    #"/patient/rule": Patient_Rule,
     "/patient/order": Patient_Order,
     "/patient/report": Patient_Report,
     # processing endpoints

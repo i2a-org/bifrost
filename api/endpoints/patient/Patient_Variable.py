@@ -18,9 +18,20 @@ class Patient_Variable(BaseEndpoint):
         if not variable: 
             return self.returnError("POST", "Variable '"+request.form["id"]+"' is not a valid variable.")
 
+        if variable["source"] == "logic":
+            return self.returnError("POST", "'"+request.form["id"]+"' can only be populated automatically.")
+
         patient = self._db.getPatient(request.patient_id)
         if not patient: 
             return self.returnError("POST", "Patient could not be found.")
+
+        # protect endpoint spamming; do not accept multiple posts, or if values
+        # that haven't expired yet;
+        value, date, _ = patient.getMostRecentValue(request.form["id"])
+        if value != False and "refresh" not in variable:
+            return self.returnError("POST", "'"+request.form["id"]+"' does not accept multiple values.")
+        elif value != False and int(time.time()) - date < variable["refresh"]:
+            return self.returnError("POST", "The last submission for '"+request.form["id"]+"' is still active.")
 
         # if all checks pass, add the value to the patient and save updates in DB;
         check, message = patient.addValue(request.form["id"], request.form["value"], variable["data_type"])
@@ -48,7 +59,7 @@ class Patient_Variable(BaseEndpoint):
 
         # if the variable has not been submitted, return error message;
         if request.args["id"] not in patient["variables"]:
-            return self.returnError("GET", "Patient has not submitted variable '"+request.args["id"]+"'.")
+            return self.returnError("GET", "Patient has no submitted variable '"+request.args["id"]+"'.")
 
         # otherwise, return all the values that have been submitted for variable;
         return self.returnResult("GET", {

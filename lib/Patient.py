@@ -18,7 +18,13 @@ class Patient:
     # --------------------------------------------------------------------------
     def __getitem__(self, index):
 
-        return self._patient_obj[index]
+        if index in self._patient_obj: return self._patient_obj[index]
+        return False
+
+    # --------------------------------------------------------------------------
+    def __delitem__(self, index):
+
+        if index in self._patient_obj: del self._patient_obj[index]
 
     # --------------------------------------------------------------------------
     def __setitem__(self, index, value):
@@ -101,9 +107,14 @@ class Patient:
         # get the most recent value;
         val, _, idx = self.getMostRecentValue(key)
         # if it could not be found, create it;
-        if not val: self.addValue(key, [value], data_type="select")
+        if not val:
+            self.addValue(key, [value], data_type="select")
         # otherwise add it to the selection;
-        else: self._patient_obj["variables"][key][idx]["value"].append(value)
+        else:
+            if isinstance(value, list):
+                self._patient_obj["variables"][key][idx]["value"].extend(value)
+            else:
+                self._patient_obj["variables"][key][idx]["value"].append(value)
 
         return True, ""
 

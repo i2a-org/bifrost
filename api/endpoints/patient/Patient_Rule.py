@@ -4,6 +4,8 @@ from api.endpoints.shared.BaseEndpoint import BaseEndpoint
 
 class Patient_Rule(BaseEndpoint):
 
+    # RETIRED: Rules are now part of reports, and should not be resolved directly anymore;
+
     # --------------------------------------------------------------------------
     def runRule(self, patient_id, rule_id):
 

@@ -73,6 +73,9 @@ class PatientOrderSystemTest(unittest.TestCase):
             if res["success"] == False:
                 self.assertEqual("Could not set variable value.", var)
                 err = True
+            res = self.postVariableValue(var, 1)
+            self.assertEqual(res["success"], False)
+            self.assertEqual(res["message"], "The last submission for '"+var+"' is still active.")
 
     # --------------------------------------------------------------------------
     def processQueue(self):
@@ -121,6 +124,13 @@ class PatientOrderSystemTest(unittest.TestCase):
         self.assertEqual(processed["success"], True)
         self.assertEqual(report_id in processed["result"], True)
         print("  => Processing report... done.")
+
+        # TODO: test if report reordering is being blocked, because last report is still valid
+
+        # test the /patient/report endpoint;
+        report_values = self.getReportDetails("nonexisting_report")
+        self.assertEqual(report_values["success"], False)
+        self.assertEqual(report_values["message"], "Report 'nonexisting_report' is not valid.")
 
         report_values = self.getReportDetails(next_report)
         self.assertEqual(report_values["success"], True)

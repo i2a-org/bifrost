@@ -132,7 +132,7 @@ class API:
             HTTP response code
         """
 
-        return (json.dumps({ "error":message }), 401)
+        return (json.dumps({ "success": False, "message": message }), 401)
 
     # --------------------------------------------------------------------------
     def isValid(self, session, patient_id):
