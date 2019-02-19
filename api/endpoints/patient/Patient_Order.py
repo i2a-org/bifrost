@@ -57,8 +57,47 @@ class Patient_Order(BaseEndpoint):
         if not patient: 
             return self.returnError("POST", "Patient could not be found.")
 
+        # prepare returned reports
+        queue = {} if "queue" not in patient._patient_obj else patient._patient_obj["queue"]
+        reports = {} if "reports" not in patient._patient_obj else patient._patient_obj["reports"]
+        todos = []
+
+        # get all the reports that can be completed at this time as well;
+        if "todos" in request.args and request.args["todos"] == "true":
+
+            # check all reports;
+            reports = self._db.searchReport()
+            for report in reports:
+
+                # if report is already in other category, skip it;
+                if report["report_id"] in queue or report["report_id"] in reports:
+                    continue
+
+                # check if the report even has a prerequesite;
+                if "prereq" in report:
+                    condition = {"conditions": report["prereq"]}
+                    condition["actions"] = [{"name": "noop"}]
+                    variables = {}
+                    # get prerequesite variables, if they are not even present,
+                    # skip the report (prereq can't be met to begin with);
+                    if "prereq_variables" in report:
+                        variables = patient.getMostRecentValues(report["prereq_variables"])
+                        stop = False
+                        for variable_id, data_type in report["prereq_variables"]:
+                            if variable_id not in variables:
+                                stop = True
+                                break
+                        if stop: continue
+                    patient["prerequesites_passed"] = False
+                    self._workers["rule_based_system"].run(condition, variables, patient)
+                    if patient["prerequesites_passed"]: todos.append(report["report_id"])
+                # if no prerequesite, add to queue;
+                else:
+                    todos.append(report["report_id"])
+
         # return all queued and finalized report;
         return self.returnResult("GET", {
-            "queue": ([] if "queue" not in patient._patient_obj else patient._patient_obj["queue"]), 
-            "reports": ([] if "reports" not in patient._patient_obj else patient._patient_obj["reports"])
+            "queue": queue, 
+            "reports": reports,
+            "todo": todos
         })

@@ -36,6 +36,6 @@ class Variables(BaseVariables):
     def __init__(self, var):
 
         for key in var:
-            new = Variable(var[key][0], var[key][1])
+            new = Variable(var[key][0], self._vt[var[key][1]])
             setattr(self, key, new)
             

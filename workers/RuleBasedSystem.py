@@ -24,8 +24,7 @@ class RuleBasedSystem(BaseWorker):
         a = Actions(patient)
 
         # if rule is not a list, wrap the rule in list;
-        if isinstance(rules, dict):
-            rules = [rules]
+        if isinstance(rules, dict): rules = [rules]
 
         # run all the rules given progressively;
         check = run_all(rule_list=rules, defined_variables=v, defined_actions=a, 

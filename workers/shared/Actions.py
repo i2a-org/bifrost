@@ -39,3 +39,9 @@ class Actions(BaseActions):
     def accept_set_values(self, variable_id, values):
 
         self._patient.addValue(variable_id, values, "select")
+
+    # --------------------------------------------------------------------------
+    @rule_action()
+    def noop(self):
+
+        self._patient["prerequesites_passed"] = True

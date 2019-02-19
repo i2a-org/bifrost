@@ -21,6 +21,11 @@ class Patient:
         return self._patient_obj[index]
 
     # --------------------------------------------------------------------------
+    def __setitem__(self, index, value):
+
+        self._patient_obj[index] = value
+
+    # --------------------------------------------------------------------------
     def getMostRecentValue(self, key):
 
         # get t he most recent value of a given variable;
