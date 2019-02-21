@@ -125,7 +125,10 @@ class PatientOrderSystemTest(unittest.TestCase):
         self.assertEqual(report_id in processed["result"], True)
         print("  => Processing report... done.")
 
-        # TODO: test if report reordering is being blocked, because last report is still valid
+        report_details = self.orderReport(next_report)
+        self.assertEqual(report_details["success"], False)
+        self.assertEqual(report_details["message"], "Your report is still valid.")
+        print("  => Reordering report... done.")
 
         # test the /patient/report endpoint;
         report_values = self.getReportDetails("nonexisting_report")

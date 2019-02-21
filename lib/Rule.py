@@ -38,7 +38,7 @@ class Rule:
             if "refresh" not in variable: variable["refresh"] = 1000000000
             #print(val == False, val, int(time.time()) - date, variable["refresh"])
             #print((use_refresh and int(time.time()) - date >= variable["refresh"]))
-            if val == False or not variable or (use_refresh and int(time.time()) - date >= variable["refresh"]):
+            if variable["source"] != "logic" and ( val == False or not variable or (use_refresh and int(time.time()) - date >= variable["refresh"]) ):
                 #missing[var] = data_type
                 missing.append(var)
 

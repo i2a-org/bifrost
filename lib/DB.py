@@ -190,7 +190,9 @@ class DB:
         return self.insert("patients", {
             "patient_id": patient_id,
             "hash": hhash,
-            "variables": {}
+            "variables": {},
+            "queue": {},
+            "reports": {}
         })
 
     # --------------------------------------------------------------------------

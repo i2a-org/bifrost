@@ -21,16 +21,21 @@ class Patient_Order(BaseEndpoint):
         # check if report is already queued;
         if patient.reportIsQueued(request.form["id"]):
             return self.returnError("POST", "Report is already being processed.")
-        if patient["queue"] != {}:
+        print(patient["queue"])
+        if "queue" in patient._patient_obj and patient["queue"] != {}:
             return self.returnError("POST", "A report is already being processed.")
+        print("done")
 
-        # get the report information
+        # get the report information;
         report = self._db.searchReport(id=request.form["id"])
         if not report:
             return self.returnError("POST", "Report '"+request.form["id"]+"' is not valid.")
         report = report[0]
 
-        # TODO: check if report previously run AND check if the old report is still valid
+        # check if report previously run AND check if the old report is still valid;
+        if request.form["id"] in patient["reports"] and ( report["refresh"] == 0 or \
+                int(time.time()) - patient["reports"][request.form["id"]] < report["refresh"] ):
+            return self.returnError("POST", "Your report is still valid.")
 
         # go through all the rules in the report and determine all the missing values;
         missing_fields = []
@@ -74,8 +79,8 @@ class Patient_Order(BaseEndpoint):
         if "todos" in request.args and request.args["todos"] == "true":
 
             # check all reports;
-            reports = self._db.searchReport()
-            for report in reports:
+            rr = self._db.searchReport()
+            for report in rr:
 
                 # if report is already in other category, skip it;
                 if report["report_id"] in queue or report["report_id"] in reports:
