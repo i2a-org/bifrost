@@ -18,13 +18,14 @@ class Patient_Order(BaseEndpoint):
         if not patient: 
             return self.returnError("POST", "Patient could not be found.")
 
+        if "queue" not in patient._patient_obj: patient["queue"] = {}
+        if "reports" not in patient._patient_obj: patient["reports"] = {}
+
         # check if report is already queued;
         if patient.reportIsQueued(request.form["id"]):
             return self.returnError("POST", "Report is already being processed.")
-        print(patient["queue"])
         if "queue" in patient._patient_obj and patient["queue"] != {}:
             return self.returnError("POST", "A report is already being processed.")
-        print("done")
 
         # get the report information;
         report = self._db.searchReport(id=request.form["id"])
@@ -52,7 +53,8 @@ class Patient_Order(BaseEndpoint):
                 if var not in missing_fields: missing_fields.append(var)
 
         # if values are missing, report;
-        if error_detected: return self.returnError("POST", "Additional variables required.", {"missing": missing_fields})
+        if error_detected:
+            return self.returnError("POST", "Additional variables required.", {"missing": missing_fields})
 
         # otherwise, add report to the queue; handle errors;
         queue, queue_id = self._db.addQueue(request.patient_id, request.form["id"])
