@@ -2,7 +2,7 @@
 import unittest
 import sys
 from os import path
-from decimal import *
+from decimal import Decimal
 
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from workers.MathWorker import MathWorker

@@ -2,7 +2,6 @@
 import unittest
 import sys
 from os import path
-from decimal import *
 import requests
 
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
@@ -59,20 +58,17 @@ class PatientOrderSystemTest(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def fillMissingVariables(self, missing):
-
-        err = False
-
+        
         for var in missing:
             vv = self.getVariableDetails(var)
             if len(vv["result"]) == 0:
                 self.assertEqual("Could not get variable detail.", var)
-                err = True
                 continue
             #if vv["result"][0]["data_type"] == "select":
             res = self.postVariableValue(var, 1)
             if res["success"] == False:
                 self.assertEqual("Could not set variable value.", var)
-                err = True
+                continue
             res = self.postVariableValue(var, 1)
             self.assertEqual(res["success"], False)
             self.assertEqual(res["message"], "The last submission for '"+var+"' is still active.")

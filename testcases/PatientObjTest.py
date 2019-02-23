@@ -2,7 +2,6 @@
 import unittest
 import sys
 from os import path
-from decimal import *
 import requests
 
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
@@ -61,7 +60,7 @@ class PatientObjTest(unittest.TestCase):
                 self.addValue(key, stack[key][0], data_type=stack[key][1])
                 keys[key] = stack[key][1]
             for key in stack:
-                value, date, date_idx = self._patient.getMostRecentValue(key)
+                value, _, _ = self._patient.getMostRecentValue(key)
                 self.assertEqual(value, stack[key][0])
         print("  => Creating and checking values... done.")
 

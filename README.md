@@ -98,7 +98,9 @@ Errors:
 
 Result: dict
 
-`{ "values": [ {"value": [value], "timestamp": [time_submitted]}, ... ], "data_type": [data_type] }`
+```json
+{ "values": [ {"value": [value], "timestamp": [time_submitted]}, ... ], "data_type": [data_type] }
+```
 
 ### POST "/patient/variable"
 
@@ -121,7 +123,9 @@ Errors:
 
 Result: list (all the `variable_id` values that can be found in the DB)
 
-`[ { "value": [value], "timestamp": [time_submitted] }, ... ]`
+```json
+[ { "value": [value], "timestamp": [time_submitted] }, ... ]
+```
 
 ### GET "/patient/order"
 
@@ -134,7 +138,9 @@ Paramters:
 
 Result: dict
 
-`{ "queue": queue, "reports": reports, "todo": todos }`
+```json
+{ "queue": queue, "reports": reports, "todo": todos }
+```
 
 ### POST "/patient/order"
 
@@ -170,14 +176,16 @@ Errors:
 
 Result: dict
 
-`{
+```json
+{
     "report_id": [...], 
     "name": [...], 
     "description": [...], 
     "refresh": [false OR rate],
     "order": [false OR position of report],
     "values": [ {'mmse_language_praxis_writing': [1.0, 'numeric'], 'mmse_attention_calculation': [1.0, 'numeric'], }, ... ]
-}`
+}
+```
 
 ### POST "/processing/queue" *DEPRECATED*
 
@@ -189,6 +197,8 @@ Description: Process all elements in queue. This call will be moved to a patient
 
 [prefix] = "dev", "staging", or "production"
 
+TODO: commit a database example that can be used to run bifrost
+
 ### [prefix].org.i2a.actions *DEPRECATED*
 
 Possibly removed in future versions.
@@ -197,30 +207,131 @@ Possibly removed in future versions.
 
 Description: Contains system logs, based on requests and library defined output.
 
-Fields: timestamp (numeric), name (string), log (string), status (string)
+Fields: `timestamp` (numeric), `name` (string), `log` (string), `status` (string)
+
+TODO: add logs table example
 
 ### [prefix].org.i2a.patients
 
 Description: Contains all patient information.
 
-Fields: patient_id (string), reports (dict), variables (dict), hash (string), queue (dict)
+Fields: `patient_id` (string), `reports` (dict), `variables` (dict), `hash` (string), `queue` (dict)
 
 Example:
-`{
+```json
+{
   "reports": { "report_id": 1549814804, ... },
   "variables": { "variable_id": [ { "value": 5, "timestamp": 1549814302 }, ... ], ... },
-  "hash": "[...]",
+  "hash": "...",
   "queue": { "report_id": "queue_id" },
-  "patient_id": "[...]"
-}`
+  "patient_id": "..."
+}
+```
 
 ### [prefix].org.i2a.queue
 
+Description: Queued jobs for processing.
+
+TODO: add queue table fields and example
+
 ### [prefix].org.i2a.reports
+
+Description: Reports that are available through the system. Contains associations to other tables.
+
+Fields: `report_id` (string), `variables` (dict), `name` (string), `description` (string), `refresh` (numeric), `rules` (list), `prereq_variables`(list), `prereq` (dict), `order` (numeric)
+
+Example:
+```json
+{
+  "variables": { "variable_id": "data_type", ... },
+  "report_id": "...",
+  "name": "...",
+  "description": "...",
+  "refresh": 29030400,
+  "rules": [ "rule_id", ... ],
+  "prereq_variables": [ [ "variable_id", "data_type" ], ... ],
+  "prereq": {
+    "any": [ { "name": "variable_id", "value": 0, "operator": "greater_than_or_equal_to" }, ... ]
+  },
+  "order": 1
+}
+```
 
 ### [prefix].org.i2a.rules
 
+Description: This table contains all the rules that can be executed by the system. There are multiple different types rules.
+
+Fields: `rule_id` (string), `variables` (list), `setop` (dict), `name` (string), `description` (string), `type` (string), `actions` (list), `project_file` (dict)
+
+#### Arithmetic rule (type=math):
+
+```json
+{
+  "rule_id": "...",
+  "name": "...",
+  "description": "...",
+  "type": "math",
+  "variables": [ [ "variable_id", "data_type" ], ... ],
+  "actions": [ { "params": { ... }, "name": "action_id" }, ... ],
+  "setop": {
+    "add": [
+      { "length": [ "acb_score_1" ] },
+      { "mult": { "length": [ "acb_score_2" ], "const": 2 } },
+      { "mult": { "length": [ "acb_score_3" ], "const": 3 } }
+    ]
+  },
+  "project_file": { ... }
+}
+```
+
+#### Set rule (type=set):
+
+```json
+{
+  "rule_id": "...",
+  "name": "...",
+  "description": "...",
+  "type": "set",
+  "variables": [ [ "variable_id", "data_type" ], ... ],
+  "actions": [ { "params": { ... }, "name": "action_id" }, ... ],
+  "setop": {
+    "name": "variable_id",
+    "value": [ "a", "b", "c", ... ],
+    "operator": "intersect"
+  },
+  "project_file": { ... }
+}
+```
+
+#### Conditional logic rule (type=logic):
+
+As described here: https://github.com/venmo/business-rules
+
+```json
+{
+  "rule_id": "...",
+  "name": "...",
+  "description": "...",
+  "type": "set",
+  "variables": [ [ "variable_id", "data_type" ], ... ],
+  "actions": [ { "params": { ... }, "name": "action_id" }, ... ],
+  "conditions": { 
+    "any": [
+      { "name": "variable_id", "operator": "less_than", "value": 5, },
+    ],
+    "all": [
+      { "name": "variable_id", "operator": "equal_to", "value": "December", },
+      { "name": "variable_id", "operator": "less_than", "value": 20, }
+    ]
+  },
+  "project_file": { ... }
+}
+```
+
 ### [prefix].org.i2a.sessions
+
+TODO: add
 
 ### [prefix].org.i2a.variables
 
+TODO: add

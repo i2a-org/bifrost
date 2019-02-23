@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 shared-local-instance.db
+.vscode/*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

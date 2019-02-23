@@ -3,7 +3,7 @@ import json
 from flask import Flask, request, jsonify
 from flask.json import JSONEncoder
 from flask_restful import Api
-from decimal import *
+from decimal import Decimal
 
 from lib.Logger import Logger
 from lib.DB import DB

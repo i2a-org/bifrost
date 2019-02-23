@@ -2,7 +2,6 @@
 import unittest
 import sys
 from os import path
-from decimal import *
 import requests
 
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )

@@ -98,7 +98,7 @@ class Patient_Order(BaseEndpoint):
                     if "prereq_variables" in report:
                         variables = patient.getMostRecentValues(report["prereq_variables"])
                         stop = False
-                        for variable_id, data_type in report["prereq_variables"]:
+                        for variable_id, _ in report["prereq_variables"]:
                             if variable_id not in variables:
                                 stop = True
                                 break
